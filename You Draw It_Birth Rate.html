@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+#container {
+	min-width: 510px;
+	max-width: 900px;
+	height: 500px;
+	margin: 0 auto
+}
+
+.highcharts-legend-item rect{
+    display:none;
+}
+.highcharts-legend-item path {
+    display: none;
+}
+
+.highcharts-legend-item text{
+    display:none;
+}
+
+
+.hidden-div {
+    display:none
+}
+
+.button {
+    background-color: #3773ac; /* light blue*/
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    float: left;
+		border-radius: 8px;
+		opacity: .3;
+}
+
+.button:hover {
+    /*background-color: #3773ac; /*#3773ac*/
+		opacity: .8 ;
+}
+
+</style>
+
+<body>
+
+<script src="https://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+
+<script src="https://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src = "https://rawgit.com/highcharts/draggable-points/master/draggable-points.js"></script>
+
+
+<div id="container" style="height: 500px"></div>
+<div id="drag"></div>
+<div id="drop"></div>
+<button class="button" id="button" style="position: absolute; left: 650px; top: 500px;">Show me how I did.</button>
+<script type="text/javascript">
+
+
+var mglobal = [];
+var series = [];
+var objText1;
+var objText2
+
+var chart = new Highcharts.Chart({
+    chart: {
+        renderTo: 'container',
+        animation: false,
+        events: {
+            click: function (event) {
+                if(event.xAxis[0].value > 30)
+                {       console.log([Highcharts.numberFormat(event.xAxis[0].value, 0),Highcharts.numberFormat(event.yAxis[0].value, 2)]);
+                 x = Highcharts.numberFormat(event.xAxis[0].value, 0);
+                 y = Highcharts.numberFormat(event.yAxis[0].value, 2);
+                 point = [parseInt(x),parseInt(y)];
+                 if($.inArray(point[0],mglobal) == -1)
+                 {
+                     this.series[1].addPoint(point);
+                     mglobal.push(point[0]);
+                     //alert(mglobal);
+                 }
+                 else
+                 {
+                     //alert("meiyou");
+                 }
+                }
+                setTimeout(function () {
+                    //label.fadeOut();
+                }, 1000);
+								objText1.destroy();
+								objText2.destroy();
+
+
+            }
+        }
+    },
+    title: {
+        text: 'Since 1960, the birth rate ...',
+				style: {
+					fontSize: '22px'
+				}
+    },
+    yAxis: {
+        max:40,
+        tickAmount: 8,
+				gridLineDashStyle:'Dash',
+				labels: {
+					style: {
+						fontSize: '12.5px'
+					}
+				},
+        title: {
+            text: 'Rate (%)',
+						style: {
+							fontSize: '17px'
+						}
+        }
+    },
+    xAxis: {
+        //categories: [],
+				tickInterval: 5,
+        labels:{
+					style: {
+						fontSize: '13px'
+					}
+        },
+        categories: ['1960','1961','1962','1963','1964','1965','1966','1967','1968','1969','1970','1971','1972','1973','1974','1975','1976','1977','1978','1979','1980','1981','1982','1983','1984','1985','1986','1987','1988','1989','1990','1991','1992','1993','1994','1995','1996','1997','1998','1999','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015'],
+        gridLineWidth: 1,
+				gridLineDashStyle:'Dash'
+        //tickAmount:50
+    },
+    plotOptions: {
+        tooltip: {
+            enabled: true
+        },
+        areaspline: {
+            fillOpacity: 0.3
+        },
+        series: {
+            //pointStart: 1960,
+            fillOpacity: 0.5,
+            point: {
+                events: {
+                    drag: function (e) {
+                        $('#drag').html()
+                          //  'Dragging <b>' + this.series.name + '</b>, <b>' + this.category + '</b> to <b>' + Highcharts.numberFormat(e.y, 2) + '</b>');
+                    },
+                    drop: function () {
+                        $('#drop').html()
+                          //  'In <b>' + this.series.name + '</b>, <b>' + this.category + '</b> was set to <b>' + Highcharts.numberFormat(this.y, 2) + '</b>');
+                    }
+                }
+            },
+            stickyTracking: false,
+            marker: {
+                enabled: false,
+                radius: 4,
+								fillColor: 'red',
+                states: {
+                    hover: {
+                        enabled: false
+                    }
+                }
+            },
+						dataLabels: {
+							enabled : true,
+							style: {
+                    fontWeight: 'bold',
+										fontSize: '14px'
+                },
+							formatter: function() {
+								var first = this.series.data[0],
+										last  = this.series.data[30];
+								if ((this.point.category === first.category && this.point.y === first.y) ||
+										(this.point.category === last.category  && this.point.y === last.y) ||
+										(this.point.category === '2015')) {
+									return Highcharts.numberFormat(this.y, 1) + "%";
+								}
+								return "";
+							}
+						}
+        },
+        column: {
+            stacking: 'normal'
+        },
+        line: {
+            cursor: 'ns-resize'
+    }
+	},
+    tooltip: {
+        enabled:false,
+        yDecimals: 2
+    },
+    series: [{
+        data: [{y: 23.7,
+					marker: {
+							enabled: true,
+							radius: 4,
+							fillColor: 'red'}
+						},23.3,22.4,21.7,21.1,19.4,18.4,17.8,17.6,17.9,18.4,17.2,15.6,14.8,14.8,14.6,14.6,15.1,15,15.6,15.9,15.8,15.9,15.6,15.6,15.8,15.6,15.7,16,16.4,{
+							y:16.7,
+							marker: {
+	                enabled: true,
+	                radius: 4,
+									fillColor: 'red'}
+								},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null
+              ],
+        draggableY: false,
+        lineWidth: 3,
+        type: 'area',
+        color: '#e0e0e0',
+        fillOpacity: 0.8,
+        lineColor:'red'//	'#c4392d'
+    },
+
+             {
+                 data: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,16.7],
+                 draggableY: true,
+                 lineWidth: 3,
+                 dashStyle:'Dot',
+                 type: 'area',
+                 color: '#ffc700',
+                 //negativeColor: '#5679c4',
+                 fillOpacity: 0.2
+             }]
+
+
+});
+
+//console.log(chart.options.plotOptions.series);
+chart.series[1].data[30].draggableY = false;
+//console.log(chart.series[0].data[0]);
+
+objText1 = chart.renderer.text('Draw the line', 620, 124)
+        .css({
+            //color: 'grey',
+            fontSize: '20px'
+        })
+        .add();
+
+objText2 = chart.renderer.text('for the rest of years.', 590, 150)
+				.css({
+				     fontSize: '20px'
+				      })
+				.add();
+/*
+$.get('data.csv', function(data) {
+				// Split the lines
+				var lines = data.split('\n');
+				$.each(lines, function(lineNo, line) {
+					var items = line.split(',');
+
+						var series = {
+							data: []
+            };
+
+						$.each(items, function(itemNo, item) {
+							if (itemNo == 0) {
+								series.name = item;
+							} else {
+								series.data.push(parseFloat(item));
+							}
+						});
+
+						options.series.push(series);
+
+					});
+
+				});
+      */
+
+      $('#button').click(function () {
+
+        chart.addSeries({
+        //data: [16.2,15.8,15.4,15,14.6,14.4,14.2,14.3,14.2,14.4,14.1,14,14.1,14,14,14.3,14.3,14,13.5,13,12.7,12.6,12.4,12.5],
+        data: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,16.7,16.2,15.8,15.4,15,14.6,14.4,14.2,14.3,14.2,14.4,14.1,14,14.1,14,14,14.3,14.3,14,13.5,13,12.7,12.6,12.4,12.5,{
+					y:12.4,
+					marker: {
+							enabled: true,
+							radius: 4,
+							symbol: 'circle',
+							fillColor: 'steelblue'},
+					//dataLabels: {
+					//	enabled: true
+					//}
+						}],
+        lineWidth: 3,
+        lineColor: 'steelblue',
+        type: 'area',
+        color: '#e0e0e0',
+				redraw: true
+        //fillOpacity: 0.1
+
+    });
+    //$('#button').off('click');
+    $(this).hide();
+    $("#hidden-div").show();
+//console.log(chart.series[2].data[55].y);
+
+//function to show the text and datalabel after clicking the button
+setTimeout(function () {
+	chart.renderer.label(chart.series[2].data[55].y + "%", 850, 290)
+			.css({
+					//color: 'steelblue',
+					fontWeight: 'bold',
+					fontSize: '14px'
+			})
+			.add();
+}, 1200);
+
+setTimeout(function () {
+	chart.renderer.text('… continued to <span style="color: red">decrease</span>.', 100, 500)
+			 .css({
+					 fontSize: '22px'
+						})
+			 .add();
+}, 2000);
+
+
+  });
+
+
+$(".highcharts-credits").remove()
+
+</script>
+</body>
